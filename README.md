@@ -1,4 +1,4 @@
-## If you want to edit directly from here, in your browser
+## If you want to edit LaTeX files directly on GitHub in your browser
 
 Click on the file name in the list above.  GitHub will present an editing interface.  Look near the top of the file for the pencil icon,
 
