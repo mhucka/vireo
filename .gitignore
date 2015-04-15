@@ -1,0 +1,14 @@
+*~
+.#*
+*.synctex.gz
+auto
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.toc
+*.loc
+*.mp
+.git/COMMIT_EDITMSG
+venv

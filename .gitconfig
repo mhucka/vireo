@@ -1,0 +1,7 @@
+[core]
+  autocrlf = false
+  safecrlf = false
+  ignorecase = false
+
+[diff]
+  renames = copies
