@@ -8,13 +8,15 @@
      * Vireo must be configured by setting the variables below.
      * --------------------------------------------------------------------- */
 
-    /* The name of the PDF file. Put the file name in double quotes.
+    /* The name of the PDF file.  Put the file name in double quotes.
      */
-    var vireo_pdf_file = "test.pdf";
+    var vireo_pdf_file = "document.pdf";
 
-    /* The name of the log file. Put the file name in double quotes.
+    /* The name of the log file.  Put the file name in double quotes.  Note:
+     * if you are running vireo-server.py in combination with LaTeX, you will
+     * want to make this the LaTeX output log for the document, not Vireo's log.
      */
-    var vireo_log_file = "test.log";
+    var vireo_log_file = "document.log";
 
     /* Refresh interval, in seconds.  BEWARE!  Every window open on this page
        will repeatedly contact the server after this many seconds elapses.
