@@ -35,11 +35,11 @@ import logging
 # .............................................................................
 
 class VireoHandler(BaseHTTPRequestHandler):
-    quiet   = False
-    command = None
-    port    = None
-    dir     = None
-    logger  = None
+    quiet  = False
+    cmd    = None
+    port   = None
+    dir    = None
+    logger = None
 
     def respond(self, code):
         self.send_response(code)
@@ -60,24 +60,24 @@ class VireoHandler(BaseHTTPRequestHandler):
         self.logger.info('Changing to direcory "{}"'.format(self.dir))
         os.chdir(self.dir)
         log = self.logger.get_log()
-        self.logger.info('{:-^50}'.format(' Executing "{}" '.format(self.command)))
-        call([self.command], stdout=log, stderr=log, shell=True)
-        self.logger.info('{:-^50}'.format(' Done '.format(self.command)))
+        self.logger.info('{:-^50}'.format(' Executing "{}" '.format(self.cmd)))
+        call([self.cmd], stdout=log, stderr=log, shell=True)
+        self.logger.info('{:-^50}'.format(' Done '.format(self.cmd)))
 
 
 # Approach borrowed from http://stackoverflow.com/a/21632210/743730
 
 class VireoHTTPServer(HTTPServer):
-    def serve_forever(self, dir, command, port, quiet, logger):
+    def serve_forever(self, dir, cmd, port, quiet, logger):
         self.RequestHandlerClass.quiet  = quiet
         self.RequestHandlerClass.dir    = dir
-        self.RequestHandlerClass.command = command
+        self.RequestHandlerClass.cmd    = cmd
         self.RequestHandlerClass.port   = port
         self.RequestHandlerClass.logger = logger
         HTTPServer.serve_forever(self)
 
 
-def main(dir=None, port=None, command=None, logfile=None, daemon=False, quiet=False):
+def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False):
     logger = VireoLogger(logfile, quiet)
 
     if not port:
