@@ -1,4 +1,4 @@
-#! /bin/sh -x
+#! /bin/sh
 #
 # @file    vireo.sh
 # @brief   Simple script to start/stop/restart vireo-server.py
@@ -24,29 +24,35 @@
 
 # Change the following variables to correspond to your environment.
 
-HOME=/your/home/dir
+HOME=/your/user/home/dir
 export HOME
 
 VIREO_DIR="/change/this/path"
 VIREO_PORT=9999
 VIREO_CMD="make"
-VIREO_LOG="vireo.log"
 VIREO_SERVER="$VIREO_DIR/vireo-server.py"
+
+VIREO_LOG="/change/this/path/vireo.log"
+VIREO_PID="/change/this/path/vireo.pid"
 
 
 # .............................................................................
 # The rest below is generic and probably does not need to be changed.
 
-if [ `id -u` = 0 ]; then
-    echo "Do not run this as root; run it as the owner of your document files."
-    exit 2
-fi
+case "$1" in
+    start|restart)
+        if [ `id -u` = 0 ]; then
+            echo "Run this as the owner of your document files, not as root."
+            exit 2
+        fi
+esac
 
 RETVAL=0
 
 case "$1" in
     start)
-        "$VIREO_SERVER" -d "$VIREO_DIR" -c "$VIREO_CMD" -l "$VIREO_LOG" -p $VIREO_PORT -o
+        "$VIREO_SERVER" -d "$VIREO_DIR" -c "$VIREO_CMD" -l "$VIREO_LOG" \
+            -p $VIREO_PORT -o > "$VIREO_PID"
         RETVAL=$?
         ;;
     stop)
