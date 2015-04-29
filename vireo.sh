@@ -39,6 +39,7 @@ VIREO_SERVER="$VIREO_DIR/vireo-server.py"
 
 if [ `id -u` = 0 ]; then
     echo "Do not run this as root; run it as the owner of your document files."
+    exit 2
 fi
 
 RETVAL=0
