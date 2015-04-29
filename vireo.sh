@@ -25,7 +25,7 @@ HOME=/home/mhucka
 export HOME
 
 VIREO_DIR=/home/mhucka/vireo/whole-cell-meeting-report
-VIREO_CMD=$VIREO_DIR/vireo-server.py -p 9005 -o -c make -l
+VIREO_CMD="$VIREO_DIR/vireo-server.py -p 9005 -o -c make -l vireo.log"
 
 RETVAL=0
 
