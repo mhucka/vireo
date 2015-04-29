@@ -29,6 +29,7 @@ import sys
 import plac
 import setproctitle
 import logging
+import json
 
 
 # Server code.
@@ -48,7 +49,28 @@ class VireoHandler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        self.logger.info('Received post request on port {}'.format(self.port))
+        self.logger.info('Received POST request on port {}'.format(self.port))
+        if self.headers.getheader('X-GitHub-Event') != 'push':
+            self.logger.info('Request lacks X-GitHub-Event header -- ignoring it.')
+            self.respond(403)
+            return
+        length = self.headers.getheader('content-length')
+        if not length:
+            self.logger.info('Request lacks content-length header -- ignoring it.')
+            self.respond(411)
+            return
+        body = self.rfile.read(int(length))
+        payload = json.loads(body)
+        branch = payload['ref']
+        if branch == 'refs/heads/gh-pages':
+            # GitHub triggers the webhook on every push, which will cause a
+            # loop when the command we invoke below pushes to the gh-pages
+            # branch.  To avoid that, we ignore pushes to the gh-pages branch.
+            self.logger.info('Push involves gh-pages branch -- ignoring it.')
+            self.respond(412)
+            return
+
+        # OK, let's do it.
         self.respond(204)
         self.run_command()
 
@@ -98,10 +120,10 @@ def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False)
         logger.fail('Cannot change to directory "{}"'.format(dir))
 
     # Check command after changing dir, in case it's a relative path.
-    if not command:
+    if not cmd:
         logger.fail('Cannot proceed without a command or script.')
-    if command.find(os.sep) >= 0 and not valid_file(command):
-        logger.fail('Unable to find file "{}"'.format(command))
+    if cmd.find(os.sep) >= 0 and not valid_file(cmd):
+        logger.fail('Unable to find file "{}"'.format(cmd))
 
     if daemon:
         pid = os.fork()
@@ -117,7 +139,7 @@ def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False)
             logger.info('Vireo running in directory "{}"'.format(str(dir)))
             logger.info('Listening on port {}'.format(port))
         httpd = VireoHTTPServer(('', port_num), VireoHandler)
-        httpd.serve_forever(dir, command, port, quiet, logger)
+        httpd.serve_forever(dir, cmd, port, quiet, logger)
     except (KeyboardInterrupt, SystemExit) as e:
         if e:
             logger.info(str(e))
@@ -180,7 +202,7 @@ def valid_file(file):
 # Argument annotation follows (help, kind, abbrev, type, choices, metavar) convention
 main.__annotations__ = dict(
     dir     = ('document directory (default: current dir)',      'option', 'd'),
-    command = ('command to execute',                             'option', 'c'),
+    cmd     = ('command to execute',                             'option', 'c'),
     logfile = ('log file (default: log to stdout)',              'option', 'l'),
     port    = ('port to listen on',                              'option', 'p'),
     daemon  = ('fork and run in daemon mode',                    'flag',   'o'),
