@@ -115,6 +115,7 @@ def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False)
     if not dir:
         dir = os.getcwd()
     try:
+        dir = dequote(dir)
         os.chdir(dir)
     except OSError:
         logger.fail('Cannot change to directory "{}"'.format(dir))
@@ -141,13 +142,11 @@ def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False)
         httpd = VireoHTTPServer(('', port_num), VireoHandler)
         httpd.serve_forever(dir, cmd, port, quiet, logger)
     except (KeyboardInterrupt, SystemExit) as e:
-        if e:
-            logger.info(str(e))
         if (not httpd is None):
             httpd.socket.close()
         if not quiet:
             if isinstance(e, KeyboardInterrupt):
-                logger.info('Received interrupt command from the keyboard.')
+                logger.info('Received interrupt signal.')
             logger.info('Vireo exiting.')
 
 
@@ -163,6 +162,7 @@ class VireoLogger(object):
         self.quiet = quiet
         self.configure_logging(logfile)
 
+
     def configure_logging(self, logfile):
         self.logger = logging.getLogger('Vireo')
         self.logger.setLevel(logging.DEBUG)
@@ -176,15 +176,18 @@ class VireoLogger(object):
         self.logger.addHandler(handler)
         self.outlog = handler.stream
 
+
     def info(self, *args):
         msg = ' '.join(args)
         self.logger.info(msg)
+
 
     def fail(self, *args):
         msg = 'ERROR: ' + ' '.join(args)
         self.logger.error(msg)
         self.logger.error('Exiting.')
         raise SystemExit(msg)
+
 
     def get_log(self):
         return self.outlog
@@ -194,6 +197,18 @@ def valid_file(file):
     if not os.path.exists(file):   return False
     elif not os.path.isfile(file): return False
     else:                          return True
+
+
+# The following came from http://stackoverflow.com/a/20577580/743730
+def dequote(str):
+    """
+    If a string has single or double quotes around it, remove them.
+    Make sure the pair of quotes match.
+    If a matching pair of quotes is not found, return the string unchanged.
+    """
+    if (str[0] == str[-1]) and str.startswith(("'", '"')):
+        return str[1:-1]
+    return str
 
 
 # Plac annotations for main function arguments
