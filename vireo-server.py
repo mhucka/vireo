@@ -132,6 +132,7 @@ def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False)
         if pid != 0:
             if not quiet:
                 logger.info('Forked Vireo daemon as process {}'.format(pid))
+            print(pid)
             sys.exit()
         os.setsid()
 
