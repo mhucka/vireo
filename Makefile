@@ -17,7 +17,7 @@ MAIN_FILE = document.tex
 basename = $(basename $(MAIN_FILE))
 pdf_file = $(addsuffix .pdf,$(basename))
 md5_file = $(addsuffix .md5,$(basename))
-log_file = $(addsuffix .md5,$(basename))
+log_file = $(addsuffix .log,$(basename))
 
 update:;
 	git checkout gh-pages
