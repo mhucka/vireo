@@ -19,6 +19,12 @@ pdf_file = $(addsuffix .pdf,$(basename))
 md5_file = $(addsuffix .md5,$(basename))
 log_file = $(addsuffix .log,$(basename))
 
+$(pdf_file): $(MAIN_FILE) Makefile $(wildcard *.tex) $(wildcard *.bib)
+	-pdflatex $(MAIN_FILE)
+	-bibtex $(MAIN_FILE)
+	-pdflatex $(MAIN_FILE)
+	-pdflatex $(MAIN_FILE)
+
 update:;
 	git checkout gh-pages
 	git stash
@@ -31,12 +37,6 @@ update:;
 	-git add index.html js css
 	-git commit -m "Latest build."
 	git push origin gh-pages -f
-
-$(pdf_file): $(MAIN_FILE) Makefile $(wildcard *.tex) $(wildcard *.bib)
-	-pdflatex $(MAIN_FILE)
-	-bibtex $(MAIN_FILE)
-	-pdflatex $(MAIN_FILE)
-	-pdflatex $(MAIN_FILE)
 
 clean:
 	-rm -f *.aux *.bbl *.blg *.log *.out *.loc *.toc *.pdf
