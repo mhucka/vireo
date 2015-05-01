@@ -198,7 +198,7 @@ function timeStamp(msg) {
     var dateobj = new Date();
     var now     = dateobj.toTimeString().split(" ");
     var time    = now[0] + " " + now[2];
-    var date    = date.toDateString().split(" ");
+    var date    = dateobj.toDateString().split(" ");
     var today   = date[0] + " " + date[1] + " " + date[2];
     return msg + time + " on " + today;
 }
