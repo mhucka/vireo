@@ -148,12 +148,20 @@ function openLog(base, path) {
     url = base.substring(0, last_slash + 1) + vireo_log_file;
     var win = window.open('');
     $.get(url, function(data) {
-        $(win.document.body).html('<html><body><div id="log"><pre>'
-                                  + data + '</pre></div></body></html>');
+        $(win.document.body).html('<html><head>' 
+                                  + '<meta http-equiv="Cache-Control" content="max-age=0" />'
+                                  + '<meta http-equiv="Cache-Control" content="no-cache" />'
+                                  + '<meta http-equiv="Cache-Control" content="no-store" />'
+                                  + '<meta http-equiv="Cache-Control" content="must-revalidate" />'
+                                  + '<meta http-equiv="Vary" content="*" />'
+                                  + '<meta http-equiv="Pragma" content="no-cache" />'
+                                  + '<meta http-equiv="Expires" content="0" />'
+                                  + '</head>'
+                                  + '<body><div id="log"><pre>' + data
+                                  + '</pre></div></body></html>');
     });
     return true;
 }
-
 
 // Miscellaneous helper code.
 // ............................................................................
