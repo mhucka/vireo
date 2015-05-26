@@ -56,7 +56,17 @@ case "$1" in
         RETVAL=$?
         ;;
     stop)
-        kill -INT `cat $VIREO_PID`
+        PID=`cat $VIREO_PID`
+        if ! kill -INT  $PID> /dev/null 2>&1 ; then
+            # We don't want to start killing processes by name, because the
+            # user might have more than one vireo-server.py running.  Let's
+            # just give up here.
+            if [ -n `ps -p$PID -o pid=` ]; then
+                echo "Could not terminate process $PID" >&2
+            else
+                echo "Process $PID no longer exists" >&2
+            fi
+        fi
         RETVAL=$?
         ;;
     restart)
