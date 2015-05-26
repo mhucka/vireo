@@ -12,3 +12,4 @@ auto
 *.mp
 .git/COMMIT_EDITMSG
 venv
+@vireo-notebook.nb
