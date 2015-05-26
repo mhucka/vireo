@@ -29,7 +29,7 @@ export HOME
 
 VIREO_DIR="/change/this/path"
 VIREO_PORT=9999
-VIREO_CMD="make"
+VIREO_CMD="make update"
 VIREO_SERVER="$VIREO_DIR/vireo-server.py"
 
 VIREO_LOG="/change/this/path/vireo.log"
@@ -56,12 +56,12 @@ case "$1" in
         RETVAL=$?
         ;;
     stop)
-        pkill --signal INT -f "$VIREO_SERVER"
+        kill -INT `cat $VIREO_PID`
         RETVAL=$?
         ;;
     restart)
         $0 stop
-        sleep 5
+        sleep 2
         $0 start
         RETVAL=$?
         ;;
