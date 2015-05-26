@@ -49,7 +49,8 @@ class VireoHandler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        self.logger.info('Received POST request on port {}'.format(self.port))
+        self.logger.info('Received POST request on port {} from {}'
+                         .format(self.port, self.client_address[0]))
         if self.headers.getheader('X-GitHub-Event') != 'push':
             self.logger.info('Request lacks X-GitHub-Event header -- ignoring it.')
             self.respond(403)
@@ -85,6 +86,12 @@ class VireoHandler(BaseHTTPRequestHandler):
         self.logger.info('{:-^50}'.format(' Executing "{}" '.format(self.cmd)))
         call([self.cmd], stdout=log, stderr=log, shell=True)
         self.logger.info('{:-^50}'.format(' Done '.format(self.cmd)))
+
+
+    # This is to keep Python's HTTPServer object from writing to stderr.
+    # We do our own logging elsewhere.
+    def log_message(self, format, *args):
+        return
 
 
 # Approach borrowed from http://stackoverflow.com/a/21632210/743730
@@ -126,6 +133,7 @@ def main(dir=None, port=None, cmd=None, logfile=None, daemon=False, quiet=False)
     if cmd.find(os.sep) >= 0 and not valid_file(cmd):
         logger.fail('Unable to find file "{}"'.format(cmd))
 
+    logger.info('Vireo started.')
     if daemon:
         pid = os.fork()
         setproctitle.setproctitle(os.path.realpath(__file__))
