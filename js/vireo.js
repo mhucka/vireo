@@ -145,7 +145,7 @@ var crc32 = function(str) {
 
 function openLog(base, path) {
     last_slash = base.lastIndexOf('/');
-    url = base.substring(0, last_slash + 1) + vireo_log_file;
+    url = base.substring(0, last_slash + 1) + vireo_log_file + '?t=' + Date.now();
     var win = window.open('');
     $.get(url, function(data) {
         $(win.document.body).html('<html><head>' 
