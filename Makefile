@@ -38,7 +38,8 @@ update:;
 	git stash
 	git fetch --all
 	git reset --hard origin/master
-	make $(pdf_file) > $(CONSOLE_LOG) 2>&1
+	date > $(CONSOLE_LOG)
+	make $(pdf_file) >> $(CONSOLE_LOG) 2>&1
 	md5sum $(pdf_file) > $(md5_file)
 	git add $(pdf_file) $(md5_file)
 	-git add -f $(log_file) $(CONSOLE_LOG)
