@@ -23,7 +23,6 @@ CONSOLE_LOG = vireo.log
 basename = $(basename $(MAIN_FILE))
 pdf_file = $(addsuffix .pdf,$(basename))
 md5_file = $(addsuffix .md5,$(basename))
-log_file = $(addsuffix .log,$(basename))
 
 latex_options = -interaction=nonstopmode -file-line-error
 
@@ -42,7 +41,7 @@ update:;
 	make $(pdf_file) >> $(CONSOLE_LOG) 2>&1
 	md5sum $(pdf_file) > $(md5_file)
 	git add $(pdf_file) $(md5_file)
-	-git add -f $(log_file) $(CONSOLE_LOG)
+	-git add -f $(CONSOLE_LOG)
 	-git add index.html js css
 	-git commit -m "Latest build."
 	git push origin gh-pages -f
